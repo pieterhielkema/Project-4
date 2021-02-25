@@ -1,0 +1,11 @@
+{
+  "name": "Project 4",
+  "version": "0.0.1",
+  "description": "Simple Online Game",
+  "dependencies": {
+    "express": "^4.15.2",
+    "socket.io": "^2.3.0"
+  },
+  "main": "index.js",
+  "devDependencies": {}
+}
