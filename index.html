@@ -23,9 +23,10 @@
 		<template v-if="map !== null">
 			<div id="map" :style="{ width: map.width + 'px', height: map.height + 'px', marginLeft: moveWindowX + 'px', marginTop: moveWindowY + 'px' }">
 				<div class="player"
-					 v-for="player in players"
-					 style="position: absolute; overflow: hidden; z-index: 20; width: 50px; height: 50px; border-radius: 10px;"
-					 :style="{ left: player.x + 'px', top: player.y + 'px', background: player.color, transform: 'translate(-50%, -50%) rotate(' + player.lookingDirection + 'deg)' }">
+					 v-for="player in map.players"
+					 style="position: absolute; overflow: hidden; z-index: 20; border-radius: 10px;"
+					 :style="{ left: player.x + 'px', top: player.y + 'px', background: player.color, transform: 'translate(-50%, -50%) rotate(' + player.lookingDirection + 'deg)',
+					 width: player.width + 'px', height: player.height + 'px' }">
 					<div style="width: 12px; height: 12px; background: #1d1d1d; border-radius: 6px; position: absolute; left: 10px; top: 6px;">
 						<div style="width: 6px; height: 6px; background: white; border-radius: 3px; position: absolute; left: 3px; top: 1.5px;"></div>
 					</div>
@@ -42,9 +43,9 @@
 				</div>
 
 				<div class="ball"
-					 v-for="ball in map.balls"
+					 v-for="ball in map.movingObjects"
 					 style="position: absolute; border-radius: 50%;"
-					 :style="{ background: ball.color, left: ball.x + 'px', top: ball.y + 'px', width: ball.width + 'px', height: ball.height + 'px' }">
+					 :style="{ background: ball.color, left: ball.x + 'px', top: ball.y + 'px', width: ball.width + 'px', height: ball.height + 'px', transform: 'translate(-50%, -50%)' }">
 				</div>
 			</div>
 		</template>
@@ -62,17 +63,21 @@
                 return {
                     socket: null,
                     map: null,
-                    players: {},
 					me: null,
+
+					// For sending moving direction
 					moveKeys: {
                         up: false,
 						right: false,
 						down: false,
 						left: false
 					},
+
+					// Position the player in the middle
                     moveWindowX: 0,
                     moveWindowY: 0,
 
+					// For sending the looking direction
                     lookingDirection: 0,
 					updateLookFunction: window._.throttle(() => { this.updateLook(); }, 100)
                 }
@@ -80,8 +85,6 @@
 			mounted() {
                 this.socket = window.io;
                 this.socket.on('updateMap', this.updateMap);
-                this.socket.on('updateBalls', this.updateBalls);
-                this.socket.on('updatePlayers', this.updatePlayers);
                 this.socket.on('updateMe', this.updateMe);
 
                 document.onkeydown = this.keyDown;
@@ -90,15 +93,12 @@
                 document.onclick = this.mouseClick;
 			},
             methods: {
+                /*
+                 * Server methods
+                 */
                 updateMap(data) {
 					this.map = data;
-                },
-                updateBalls(data) {
-                    this.map.balls = data;
-                },
-                updatePlayers(data) {
-                    this.players = data;
-                    this.updateMePosition();
+					this.updateMePosition();
                 },
                 updateMe(data) {
                     if(data === null)
@@ -108,11 +108,15 @@
                 },
 				updateMePosition() {
                     if(this.me !== null && this.me !== undefined) {
-                        this.moveWindowX = -this.players[this.me.id].x + (window.innerWidth / 2);
-                        this.moveWindowY = -this.players[this.me.id].y + (window.innerHeight / 2);
+                        this.moveWindowX = -this.map.players[this.me.id].x + (window.innerWidth / 2);
+                        this.moveWindowY = -this.map.players[this.me.id].y + (window.innerHeight / 2);
                     }
 				},
 
+
+				/*
+				 * Client methods
+				 */
 				keyDown(event) {
                     switch (event.key) {
                         case "a":
