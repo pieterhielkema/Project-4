@@ -16,8 +16,8 @@ const colors = ["#1abc9c", "#16a085", "#27ae60", "#2ecc71", "#3498db", "#9b59b6"
 
 /* INIT VARS */
 var map = {
-    height: 700,
-    width: 1200,
+    height: 2000,
+    width: 2000,
     background: [
         {
             image: "assets/grass.jpg",
@@ -32,6 +32,34 @@ var map = {
         }
     ],
     objects: [
+        // {
+        //     color: 'black',
+        //     x: 300,
+        //     y: 400,
+        //     width: 500,
+        //     height: 40,
+        //     deleteAfterUse: false,
+        //     canWalkThrough: false,
+        // }
+    ],
+    players: {},
+};
+
+/*
+ * New items loop
+ */
+setInterval(() => {
+    const newItems = [
+        {
+            color: 'red',
+            x: 10,
+            y: 10,
+            width: 40,
+            height: 40,
+            onUserInteraction: (player) => {
+                player.health -= 1;
+            }
+        },
         {
             color: 'red',
             x: 10,
@@ -50,7 +78,7 @@ var map = {
             height: 40,
             deleteAfterUse: true,
             onUserInteraction: (player) => {
-                player.health += 20;
+                player.health = Math.min(100, player.health + 20);
             }
         },
         {
@@ -61,7 +89,7 @@ var map = {
             height: 40,
             deleteAfterUse: true,
             onUserInteraction: (player) => {
-                player.health += 20;
+                player.health = Math.min(100, player.health + 20);
             }
         },
         {
@@ -72,7 +100,7 @@ var map = {
             height: 40,
             deleteAfterUse: true,
             onUserInteraction: (player) => {
-                player.health += 20;
+                player.health = Math.min(100, player.health + 20);
             }
         },
         {
@@ -83,7 +111,7 @@ var map = {
             height: 40,
             deleteAfterUse: false,
             onUserInteraction: (player) => {
-                player.health += 5;
+                player.health = Math.min(100, player.health + 5);
             }
         },
         {
@@ -94,21 +122,15 @@ var map = {
             height: 40,
             deleteAfterUse: true,
             onUserInteraction: (player) => {
-                player.distance += 2;
+                player.distance = Math.min(7, player.distance + 1);
             }
         },
-        {
-            color: 'black',
-            x: 300,
-            y: 400,
-            width: 500,
-            height: 40,
-            deleteAfterUse: false,
-            canWalkThrough: false,
-        }
-    ],
-    players: {},
-};
+    ];
+    const randomInt = Math.floor(Math.random() * Math.floor(newItems.length));
+    newItems[randomInt].x = 50 + Math.floor(Math.random() * Math.floor(map.width - 100));
+    newItems[randomInt].y = 50 + Math.floor(Math.random() * Math.floor(map.height - 100));
+    map.objects.push(newItems[randomInt]);
+}, 1000);
 
 /*
  * Main Loop
@@ -162,14 +184,14 @@ io.on('connection', function(socket){
      */
     console.log('Player added');
     map.players[socket.id] = {
-        x: 100,
-        y: 100,
+        x: 100 + Math.floor(Math.random() * Math.floor(map.width - 200)),
+        y: 100 + Math.floor(Math.random() * Math.floor(map.height - 200)),
         width: 50,
         height: 50,
         id: socket.id,
         health: 100,
         lookingDirection: 0,
-        distance: 5,
+        distance: 3,
         color: colors[Math.floor(Math.random() * colors.length)],
         moveKeys: null,
         callback: (player) => {
