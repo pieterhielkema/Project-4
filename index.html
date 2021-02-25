@@ -8,9 +8,11 @@
 		* { padding: 0; margin: 0; box-sizing: border-box; outline: none; color: inherit; text-decoration: inherit; -webkit-appearance : none; -moz-appearance : none; -webkit-font-smoothing: antialiased; }
 		*:not(h1, h2, h3, h4, h5, h6) { font-size: inherit; font-family: inherit; }
 		html,
-		body { width: 100%; height: 100%; background: #1d1d1d; cursor: crosshair; }
+		body { width: 100%; height: 100%; background: #1d1d1d; cursor: crosshair; font-family: sans-serif; }
 		#app { width: 100%; height: 100%; overflow: hidden; user-select: none; position: relative; }
 		#map { background: #DADADA; position: relative; }
+		.youdied { position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0, 0, 0, 0.4); text-align: center; padding: 50px; color: #fff; }
+		.youdied h1 { margin-bottom: 20px; }
 	</style>
 </head>
 <body>
@@ -19,13 +21,17 @@
 		<div v-if="me !== null" style="position: absolute; z-index: 25; width: 250px; height: 20px; border-radius: 3px; overflow: hidden; top: 10px; left: 10px; background: red;">
 			<div style="float: left; height: 20px; background: green;" :style="{ width: me.health + '%' }"></div>
 		</div>
+		<div v-else class="youdied">
+			<h1>You lost!</h1>
+			<p>Refresh the page to start again</p>
+		</div>
 
 		<template v-if="map !== null">
 			<div id="map" :style="{ width: map.width + 'px', height: map.height + 'px', marginLeft: moveWindowX + 'px', marginTop: moveWindowY + 'px' }">
 				<div class="player"
 					 v-for="player in map.players"
 					 style="position: absolute; overflow: hidden; z-index: 20; border-radius: 10px;"
-					 :style="{ left: player.x + 'px', top: player.y + 'px', background: player.color, transform: 'translate(-50%, -50%) rotate(' + player.lookingDirection + 'deg)',
+					 :style="{ left: player.x + 'px', top: player.y + 'px', background: player.color, transform: 'rotate(' + player.lookingDirection + 'deg)',
 					 width: player.width + 'px', height: player.height + 'px' }">
 					<div style="width: 12px; height: 12px; background: #1d1d1d; border-radius: 6px; position: absolute; left: 10px; top: 6px;">
 						<div style="width: 6px; height: 6px; background: white; border-radius: 3px; position: absolute; left: 3px; top: 1.5px;"></div>
@@ -45,7 +51,7 @@
 				<div class="ball"
 					 v-for="ball in map.movingObjects"
 					 style="position: absolute; border-radius: 50%;"
-					 :style="{ background: ball.color, left: ball.x + 'px', top: ball.y + 'px', width: ball.width + 'px', height: ball.height + 'px', transform: 'translate(-50%, -50%)' }">
+					 :style="{ background: ball.color, left: ball.x + 'px', top: ball.y + 'px', width: ball.width + 'px', height: ball.height + 'px' }">
 				</div>
 			</div>
 		</template>
@@ -101,13 +107,10 @@
 					this.updateMePosition();
                 },
                 updateMe(data) {
-                    if(data === null)
-                        return;
-
                     this.me = data;
                 },
 				updateMePosition() {
-                    if(this.me !== null && this.me !== undefined) {
+                    if(this.me !== null && this.me !== undefined && this.map.players[this.me.id] !== undefined) {
                         this.moveWindowX = -this.map.players[this.me.id].x + (window.innerWidth / 2);
                         this.moveWindowY = -this.map.players[this.me.id].y + (window.innerHeight / 2);
                     }
@@ -160,15 +163,24 @@
                     this.socket.emit('move', this.moveKeys);
                 },
                 mouseMove(event) {
+                    if(this.me === null || this.me === undefined)
+                        return;
+
                     let x = (event.clientX - (window.innerWidth / 2));
                     let y = (event.clientY - (window.innerHeight / 2));
                     this.lookingDirection = 360 - (180 + (Math.atan2(x, y) * (180.0 / Math.PI)));
                     this.updateLookFunction();
 				},
 				updateLook() {
+                    if(this.me === null || this.me === undefined)
+                        return;
+
                     this.socket.emit('look', this.lookingDirection);
 				},
 				mouseClick() {
+                    if(this.me === null || this.me === undefined)
+                        return;
+
                     this.socket.emit('shoot');
 				}
             },

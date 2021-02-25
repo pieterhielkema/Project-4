@@ -10,7 +10,7 @@ app.get('/', function(req, res){
 });
 
 /* PARAMS */
-const refreshRate = 25; // ms
+const refreshRate = 20; // ms
 const colors = ["#1abc9c", "#16a085", "#27ae60", "#2ecc71", "#3498db", "#9b59b6", "#34495e", "#2980b9", "#8e44ad", "#2c3e50", "#f1c40f", "#e67e22", "#e74c3c",
     "#95a5a6", "#f39c12", "#d35400", "#c0392b", "#bdc3c7", "#7f8c8d"];
 
@@ -118,6 +118,9 @@ setInterval(() => {
     Object.keys(map.players).forEach(key => {
         const player = map.players[key];
 
+        if(player.health <= 0)
+            delete map.players[key];
+
         player.callback(player);
 
         // Check for collision with objects
@@ -147,7 +150,7 @@ setInterval(() => {
                 player.y < obj.y + obj.height &&
                 player.y + player.height > obj.y;
         });
-        if(movingObject !== undefined) {
+        if(movingObject !== undefined && movingObject.sender !== player) {
             if(movingObject.onUserInteraction !== undefined)
                 movingObject.onUserInteraction(player);
 
@@ -205,6 +208,10 @@ io.on('connection', function(socket){
 
     // Update self every x
     setInterval(() => {
+        if(map.players[socket.id] === undefined) {
+            socket.emit('updateMe', null);
+            return;
+        }
         socket.emit('updateMe', map.players[socket.id]);
     }, refreshRate * 10);
 
@@ -212,6 +219,9 @@ io.on('connection', function(socket){
      * Move player somewhere
      */
     socket.on('move', function(moveKeys){
+        if(map.players[socket.id] === undefined)
+            return;
+
         map.players[socket.id].moveKeys = moveKeys;
     });
 
@@ -219,6 +229,9 @@ io.on('connection', function(socket){
      * Change looking direction of player
      */
     socket.on('look', function(lookingDirection) {
+        if(map.players[socket.id] === undefined)
+            return;
+
         map.players[socket.id].lookingDirection = lookingDirection;
     });
 
@@ -226,12 +239,16 @@ io.on('connection', function(socket){
      * Shoot a ball to someone
      */
     socket.on('shoot', function() {
+        if(map.players[socket.id] === undefined)
+            return;
+
         map.movingObjects.push({
-            x: map.players[socket.id].x,
-            y: map.players[socket.id].y,
+            x: map.players[socket.id].x + (map.players[socket.id].width / 2),
+            y: map.players[socket.id].y + (map.players[socket.id].height / 2),
             width: 10,
             height: 10,
             color: 'orange',
+            sender: map.players[socket.id],
             params: {
                 i: 0,
                 distance: map.players[socket.id].distance,
