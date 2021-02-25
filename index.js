@@ -254,6 +254,7 @@ io.on('connection', function(socket){
                 distance: map.players[socket.id].distance,
                 direction: map.players[socket.id].lookingDirection
             },
+            deleteAfterUse: true,
             callback: (ball) => {
                 const direction = ball.params.direction;
                 if(direction >= 0 && direction < 90) {
