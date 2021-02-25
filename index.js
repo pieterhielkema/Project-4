@@ -107,7 +107,6 @@ var map = {
             canWalkThrough: false,
         }
     ],
-    movingObjects: [],
     players: {},
 };
 
@@ -125,40 +124,23 @@ setInterval(() => {
 
         // Check for collision with objects
         const object = map.objects.find(obj => {
-            // return player.x > obj.x && player.x < (obj.x + obj.width)
-            //     && player.y > obj.y && player.y < (obj.y + obj.height);
-            //
             return player.x < obj.x + obj.width &&
                 player.x + player.width > obj.x &&
                 player.y < obj.y + obj.height &&
                 player.y + player.height > obj.y;
         });
-        if(object !== undefined) {
+        if(object !== undefined && object.sender !== player) {
             if(object.onUserInteraction !== undefined)
                 object.onUserInteraction(player);
 
             if(object.deleteAfterUse !== undefined && object.deleteAfterUse === true)
                 map.objects = map.objects.filter(x => x !== object);
         }
-
-        // Check for collision with moving objects
-        const movingObject = map.movingObjects.find(obj => {
-            // return player.x > obj.x && player.x < (obj.x + obj.width)
-            //     && player.y > obj.y && player.y < (obj.y + obj.height);
-            return player.x < obj.x + obj.width &&
-                player.x + player.width > obj.x &&
-                player.y < obj.y + obj.height &&
-                player.y + player.height > obj.y;
-        });
-        if(movingObject !== undefined && movingObject.sender !== player) {
-            if(movingObject.onUserInteraction !== undefined)
-                movingObject.onUserInteraction(player);
-
-            if(movingObject.deleteAfterUse !== undefined && movingObject.deleteAfterUse === true)
-                map.movingObjects = map.movingObjects.filter(x => x !== movingObject);
-        }
     });
-    map.movingObjects.forEach(object => object.callback(object));
+    map.objects.forEach(object => {
+        if(object.callback !== undefined)
+            object.callback(object)
+    });
     io.emit('updateMap', map);
 }, refreshRate);
 
@@ -242,7 +224,7 @@ io.on('connection', function(socket){
         if(map.players[socket.id] === undefined)
             return;
 
-        map.movingObjects.push({
+        map.objects.push({
             x: map.players[socket.id].x + (map.players[socket.id].width / 2),
             y: map.players[socket.id].y + (map.players[socket.id].height / 2),
             width: 10,
@@ -273,7 +255,7 @@ io.on('connection', function(socket){
 
                 ball.params.i++;
                 if(ball.params.i > ball.params.distance) {
-                    map.movingObjects = map.movingObjects.filter(x => x !== ball);
+                    map.objects = map.objects.filter(x => x !== ball);
                 }
             },
             onUserInteraction(player) {
