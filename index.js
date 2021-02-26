@@ -77,7 +77,7 @@ setInterval(() => {
             }
         },
         {
-            color: 'gold',
+            color: 'gold', // yellow
             x: 1050,
             y: 650,
             width: 20,
@@ -87,7 +87,7 @@ setInterval(() => {
             },
             callback: (item) => {
                 item.params.i++;
-                if(item.params.i > 5000) {
+                if(item.params.i > 500) {
                     map.objects = map.objects.filter(x => x !== item);
                 }
             },
