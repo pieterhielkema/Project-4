@@ -54,8 +54,8 @@ setInterval(() => {
             color: 'red',
             x: 10,
             y: 10,
-            width: 40,
-            height: 40,
+            width: 20,
+            height: 20,
             params: {
                 i: 0,
             },
@@ -73,8 +73,8 @@ setInterval(() => {
             color: 'red',
             x: 10,
             y: 10,
-            width: 40,
-            height: 40,
+            width: 20,
+            height: 20,
             params: {
                 i: 0,
             },
@@ -92,8 +92,8 @@ setInterval(() => {
             color: 'green',
             x: 200,
             y: 10,
-            width: 40,
-            height: 40,
+            width: 20,
+            height: 20,
             params: {
                 i: 0,
             },
@@ -112,8 +112,8 @@ setInterval(() => {
             color: 'green',
             x: 200,
             y: 400,
-            width: 40,
-            height: 40,
+            width: 20,
+            height: 20,
             params: {
                 i: 0,
             },
@@ -132,8 +132,8 @@ setInterval(() => {
             color: 'green',
             x: 1000,
             y: 600,
-            width: 40,
-            height: 40,
+            width: 20,
+            height: 20,
             params: {
                 i: 0,
             },
@@ -152,8 +152,8 @@ setInterval(() => {
             color: 'gold',
             x: 1050,
             y: 650,
-            width: 40,
-            height: 40,
+            width: 20,
+            height: 20,
             params: {
                 i: 0,
             },
@@ -172,8 +172,8 @@ setInterval(() => {
             color: 'blue',
             x: 1100,
             y: 400,
-            width: 40,
-            height: 40,
+            width: 20,
+            height: 20,
             params: {
                 i: 0,
             },
@@ -186,6 +186,26 @@ setInterval(() => {
             deleteAfterUse: true,
             onUserInteraction: (player) => {
                 player.distance = Math.min(7, player.distance + 1);
+            }
+        },
+        {
+            color: 'indigo',
+            x: 1100,
+            y: 400,
+            width: 20,
+            height: 20,
+            params: {
+                i: 0,
+            },
+            callback: (item) => {
+                item.params.i++;
+                if(item.params.i > 5000) {
+                    map.objects = map.objects.filter(x => x !== item);
+                }
+            },
+            deleteAfterUse: true,
+            onUserInteraction: (player) => {
+                player.balls.regular += 10;
             }
         },
     ];
@@ -255,6 +275,9 @@ io.on('connection', function(socket){
         health: 100,
         lookingDirection: 0,
         distance: 3,
+        balls: {
+            regular: 25,
+        },
         color: colors[Math.floor(Math.random() * colors.length)],
         moveKeys: null,
         callback: (player) => {
@@ -308,6 +331,11 @@ io.on('connection', function(socket){
     socket.on('shoot', function() {
         if(map.players[socket.id] === undefined)
             return;
+
+        if(map.players[socket.id].balls.regular < 1)
+            return;
+
+        map.players[socket.id].balls.regular--;
 
         map.objects.push({
             x: map.players[socket.id].x + (map.players[socket.id].width / 2),
