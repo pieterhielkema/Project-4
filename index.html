@@ -37,10 +37,10 @@
 		</div>
 
 		<div v-if="isMobile" class="joystick">
-			<div class="top piece" @touchstart.stop="keyDown({ key: 'w' })" @touchstop.stop="keyUp({ key: 'w' })"></div>
-			<div class="right piece" @touchstart.stop="keyDown({ key: 'd' })" @touchstop.stop="keyUp({ key: 'd' })"></div>
-			<div class="left piece" @touchstart.stop="keyDown({ key: 'a' })" @touchstop.stop="keyUp({ key: 'a' })"></div>
-			<div class="bottom piece" @touchstart.stop="keyDown({ key: 's' })" @touchstop.stop="keyUp({ key: 's' })"></div>
+			<div class="top piece" @touchstart.stop="keyDown({ key: 'w' })" @touchup="keyUp({ key: 'w' })"></div>
+			<div class="right piece" @touchstart.stop="keyDown({ key: 'd' })" @touchup="keyUp({ key: 'd' })"></div>
+			<div class="left piece" @touchstart.stop="keyDown({ key: 'a' })" @touchup="keyUp({ key: 'a' })"></div>
+			<div class="bottom piece" @touchstart.stop="keyDown({ key: 's' })" @touchup="keyUp({ key: 's' })"></div>
 		</div>
 
 		<template v-if="map !== null">
