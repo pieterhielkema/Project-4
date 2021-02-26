@@ -56,6 +56,15 @@ setInterval(() => {
             y: 10,
             width: 40,
             height: 40,
+            params: {
+                i: 0,
+            },
+            callback: (item) => {
+                item.params.i++;
+                if(item.params.i > 5000) {
+                    map.objects = map.objects.filter(x => x !== item);
+                }
+            },
             onUserInteraction: (player) => {
                 player.health -= 1;
             }
@@ -66,6 +75,15 @@ setInterval(() => {
             y: 10,
             width: 40,
             height: 40,
+            params: {
+                i: 0,
+            },
+            callback: (item) => {
+                item.params.i++;
+                if(item.params.i > 5000) {
+                    map.objects = map.objects.filter(x => x !== item);
+                }
+            },
             onUserInteraction: (player) => {
                 player.health -= 1;
             }
@@ -76,6 +94,15 @@ setInterval(() => {
             y: 10,
             width: 40,
             height: 40,
+            params: {
+                i: 0,
+            },
+            callback: (item) => {
+                item.params.i++;
+                if(item.params.i > 5000) {
+                    map.objects = map.objects.filter(x => x !== item);
+                }
+            },
             deleteAfterUse: true,
             onUserInteraction: (player) => {
                 player.health = Math.min(100, player.health + 20);
@@ -87,6 +114,15 @@ setInterval(() => {
             y: 400,
             width: 40,
             height: 40,
+            params: {
+                i: 0,
+            },
+            callback: (item) => {
+                item.params.i++;
+                if(item.params.i > 5000) {
+                    map.objects = map.objects.filter(x => x !== item);
+                }
+            },
             deleteAfterUse: true,
             onUserInteraction: (player) => {
                 player.health = Math.min(100, player.health + 20);
@@ -98,6 +134,15 @@ setInterval(() => {
             y: 600,
             width: 40,
             height: 40,
+            params: {
+                i: 0,
+            },
+            callback: (item) => {
+                item.params.i++;
+                if(item.params.i > 5000) {
+                    map.objects = map.objects.filter(x => x !== item);
+                }
+            },
             deleteAfterUse: true,
             onUserInteraction: (player) => {
                 player.health = Math.min(100, player.health + 20);
@@ -109,6 +154,15 @@ setInterval(() => {
             y: 650,
             width: 40,
             height: 40,
+            params: {
+                i: 0,
+            },
+            callback: (item) => {
+                item.params.i++;
+                if(item.params.i > 5000) {
+                    map.objects = map.objects.filter(x => x !== item);
+                }
+            },
             deleteAfterUse: false,
             onUserInteraction: (player) => {
                 player.health = Math.min(100, player.health + 5);
@@ -120,6 +174,15 @@ setInterval(() => {
             y: 400,
             width: 40,
             height: 40,
+            params: {
+                i: 0,
+            },
+            callback: (item) => {
+                item.params.i++;
+                if(item.params.i > 5000) {
+                    map.objects = map.objects.filter(x => x !== item);
+                }
+            },
             deleteAfterUse: true,
             onUserInteraction: (player) => {
                 player.distance = Math.min(7, player.distance + 1);
