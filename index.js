@@ -215,6 +215,7 @@ io.on('connection', function(socket){
      */
     console.log('Player added');
     map.players[socket.id] = {
+        name: null,
         x: 100 + Math.floor(Math.random() * Math.floor(map.width - 200)),
         y: 100 + Math.floor(Math.random() * Math.floor(map.height - 200)),
         width: 50,
