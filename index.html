@@ -27,7 +27,7 @@
 		</div>
 
 		<template v-if="map !== null">
-			<div id="map" :style="{ width: map.width + 'px', height: map.height + 'px', marginLeft: moveWindowX + 'px', marginTop: moveWindowY + 'px' }">
+			<div id="map" :style="{ width: map.width + 'px', height: map.height + 'px', marginLeft: (moveWindowX - 25) + 'px', marginTop: (moveWindowY - 25) + 'px' }">
 				<div class="player"
 					 v-for="player in map.players"
 					 style="position: absolute; overflow: hidden; z-index: 20; border-radius: 10px;"

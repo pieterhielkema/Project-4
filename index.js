@@ -260,20 +260,9 @@ io.on('connection', function(socket){
             },
             deleteAfterUse: true,
             callback: (ball) => {
-                const direction = ball.params.direction;
-                if(direction >= 0 && direction < 90) {
-                    ball.x += (direction % 90) / (refreshRate / 12);
-                    ball.y += -(90 - (direction % 90)) / (refreshRate / 12);
-                } else if(direction >= 90 && direction < 180) {
-                    ball.x += (90 - (direction % 90)) / (refreshRate / 12);
-                    ball.y += (direction % 90) / (refreshRate / 12);
-                } else if(direction >= 180 && direction < 270) {
-                    ball.x += -(direction % 90) / (refreshRate / 12);
-                    ball.y += (90 - (direction % 90)) / (refreshRate / 12);
-                } else if(direction >= 270 && direction < 360) {
-                    ball.x += -(90 - (direction % 90)) / (refreshRate / 12);
-                    ball.y += -(direction % 90) / (refreshRate / 12);
-                }
+                const direction = ball.params.direction - 90;
+                ball.x += Math.cos(direction * Math.PI / 180) * 50;
+                ball.y += Math.sin(direction * Math.PI / 180) * 50;
 
                 ball.params.i++;
                 if(ball.params.i > ball.params.distance) {
