@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<title>Project 4</title>
 
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
 	<style>
 		* { padding: 0; margin: 0; box-sizing: border-box; outline: none; color: inherit; text-decoration: inherit; -webkit-appearance : none; -moz-appearance : none; -webkit-font-smoothing: antialiased; }
 		*:not(h1, h2, h3, h4, h5, h6) { font-size: inherit; font-family: inherit; }
@@ -18,11 +19,11 @@
 <body>
 	<div id="app">
 		<!-- My health -->
-		<div v-if="me !== null" style="position: absolute; z-index: 40; top: 0; left: 5px; display: flex; background: white; border-radius: 0 0 5px 5px; padding: 20px;">
+		<div v-if="me !== null" style="position: absolute; z-index: 40; top: 0; left: 5px; display: flex; background: white; border-radius: 0 0 5px 5px; padding: 10px;">
 			<div style="width: 250px; height: 20px; border-radius: 3px; overflow: hidden; background: red;">
 				<div style="float: left; height: 20px; background: green;" :style="{ width: me.health + '%' }"></div>
 			</div>
-			<p style="margin-left: 10px;">{{ me.balls.regular }} balls</p>
+			<p style="margin-left: 10px;"><i class="fas fa-fire-alt" style="color: indigo;"></i> {{ me.balls.regular }} &nbsp;&nbsp; <i class="fas fa-users" style="color: orange;"></i> {{ Object.keys(map.players).length }}</p>
 		</div>
 		<div v-else class="youdied">
 			<h1>You lost!</h1>
