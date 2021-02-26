@@ -15,7 +15,7 @@ const colors = ["#1abc9c", "#16a085", "#27ae60", "#2ecc71", "#3498db", "#9b59b6"
     "#95a5a6", "#f39c12", "#d35400", "#c0392b", "#bdc3c7", "#7f8c8d"];
 
 /* INIT VARS */
-var map = {
+const map = {
     height: 2000,
     width: 2000,
     objects: [
@@ -31,6 +31,7 @@ var map = {
     ],
     players: {},
 };
+const names = {};
 
 /*
  * New items loop
@@ -215,7 +216,7 @@ io.on('connection', function(socket){
      */
     console.log('Player added');
     map.players[socket.id] = {
-        name: null,
+        name: names[socket.id],
         x: 100 + Math.floor(Math.random() * Math.floor(map.width - 200)),
         y: 100 + Math.floor(Math.random() * Math.floor(map.height - 200)),
         width: 50,
@@ -253,6 +254,18 @@ io.on('connection', function(socket){
         }
         socket.emit('updateMe', map.players[socket.id]);
     }, refreshRate * 10);
+
+    /*
+     * Set name of the player (socket)
+     */
+    socket.on('setName', function(name) {
+        names[socket.id] = name;
+
+        if(map.players[socket.id] === undefined)
+            return;
+
+        map.players[socket.id].name = name;
+    });
 
     /*
      * Move player somewhere
@@ -323,6 +336,11 @@ io.on('connection', function(socket){
         console.log('user disconnected');
         delete map.players[socket.id];
         console.log("Player count: " + Object.keys(map.players).length);
+
+        if(names[socket.id] === undefined)
+            return;
+
+        delete names[socket.id];
     });
 });
 

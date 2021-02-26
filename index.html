@@ -29,7 +29,7 @@
 			<div style="width: 250px; height: 20px; border-radius: 3px; overflow: hidden; background: red;">
 				<div style="float: left; height: 20px; background: green;" :style="{ width: me.health + '%' }"></div>
 			</div>
-			<p style="margin: 0 10px 0 20px;"><i class="fas fa-fire-alt" style="color: indigo;"></i> &nbsp;{{ me.balls.regular }} &nbsp;&nbsp;&nbsp; <i class="fas fa-users" style="color: orange;"></i> &nbsp;{{ Object.keys(map.players).length }}</p>
+			<p style="margin: 0 10px 0 20px;"><i class="fas fa-fire-alt" style="color: indigo;"></i> &nbsp;{{ me.balls.regular }} &nbsp;&nbsp;&nbsp; <i class="fas fa-users" style="color: orange;"></i> &nbsp;{{ Object.keys(map.players).length }} &nbsp;&nbsp;&nbsp; <span style="cursor:pointer;" @click.stop="setName"><i class="fas fa-cog"></i></span></p>
 		</div>
 		<div v-else class="youdied">
 			<h1>You lost!</h1>
@@ -45,18 +45,23 @@
 
 		<template v-if="map !== null">
 			<div id="map" :style="{ width: map.width + 'px', height: map.height + 'px', marginLeft: (moveWindowX - 25) + 'px', marginTop: (moveWindowY - 25) + 'px' }">
-				<div class="player"
-					 v-for="player in map.players"
-					 style="position: absolute; overflow: hidden; z-index: 30; border-radius: 10px;"
-					 :style="{ left: player.x + 'px', top: player.y + 'px', background: player.color, transform: 'rotate(' + player.lookingDirection + 'deg)',
+
+				<div class="player-wrap" v-for="player in map.players" style="z-index: 30; position: absolute;" :style="{ left: player.x + 'px', top: player.y + 'px' }">
+					<div class="player"
+						 style="overflow: hidden; border-radius: 10px;"
+						 :style="{ background: player.color, transform: 'rotate(' + player.lookingDirection + 'deg)',
 					 width: player.width + 'px', height: player.height + 'px' }">
-					<div style="width: 12px; height: 12px; background: #1d1d1d; border-radius: 6px; position: absolute; left: 10px; top: 6px;">
-						<div style="width: 6px; height: 6px; background: white; border-radius: 3px; position: absolute; left: 3px; top: 1.5px;"></div>
+						<div style="width: 12px; height: 12px; background: #1d1d1d; border-radius: 6px; position: absolute; left: 10px; top: 6px;">
+							<div style="width: 6px; height: 6px; background: white; border-radius: 3px; position: absolute; left: 3px; top: 1.5px;"></div>
+						</div>
+						<div style="width: 12px; height: 12px; background: #1d1d1d; border-radius: 6px; position: absolute; right: 10px; top: 6px;">
+							<div style="width: 6px; height: 6px; background: white; border-radius: 3px; position: absolute; left: 3px; top: 1.5px;"></div>
+						</div>
+						<div style="width: 12px; height: 12px; background: #ffc6c3; border-radius: 6px; position: absolute; right: 19px; top: -8px;"></div>
 					</div>
-					<div style="width: 12px; height: 12px; background: #1d1d1d; border-radius: 6px; position: absolute; right: 10px; top: 6px;">
-						<div style="width: 6px; height: 6px; background: white; border-radius: 3px; position: absolute; left: 3px; top: 1.5px;"></div>
+					<div class="name" v-if="player.name" style="border-radius: 3px; color: white; padding: 3px 4px; background: rgba(0, 0, 0, 0.5); font-size: 10px; text-align: center; position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%);">
+						{{ player.name }}
 					</div>
-					<div style="width: 12px; height: 12px; background: #ffc6c3; border-radius: 6px; position: absolute; right: 19px; top: -8px;"></div>
 				</div>
 
 				<div class="ball"
@@ -131,6 +136,12 @@
 				/*
 				 * Client methods
 				 */
+				setName() {
+				    var name = prompt("Your name:");
+
+				    if(name !== null)
+				        this.socket.emit('setName', name);
+				},
 				keyDown(event) {
                     switch (event.key) {
                         case "a":
