@@ -23,7 +23,7 @@
 			<div style="width: 250px; height: 20px; border-radius: 3px; overflow: hidden; background: red;">
 				<div style="float: left; height: 20px; background: green;" :style="{ width: me.health + '%' }"></div>
 			</div>
-			<p style="margin-left: 10px;"><i class="fas fa-fire-alt" style="color: indigo;"></i> {{ me.balls.regular }} &nbsp;&nbsp; <i class="fas fa-users" style="color: orange;"></i> {{ Object.keys(map.players).length }}</p>
+			<p style="margin: 0 10px 0 20px;"><i class="fas fa-fire-alt" style="color: indigo;"></i> &nbsp;{{ me.balls.regular }} &nbsp;&nbsp;&nbsp; <i class="fas fa-users" style="color: orange;"></i> &nbsp;{{ Object.keys(map.players).length }}</p>
 		</div>
 		<div v-else class="youdied">
 			<h1>You lost!</h1>
