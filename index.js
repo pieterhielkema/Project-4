@@ -18,24 +18,11 @@ const colors = ["#1abc9c", "#16a085", "#27ae60", "#2ecc71", "#3498db", "#9b59b6"
 var map = {
     height: 2000,
     width: 2000,
-    background: [
-        {
-            image: "assets/grass.jpg",
-            start: {
-                x: 0,
-                y: 0,
-            },
-            end: {
-                x: 700,
-                y: 1200,
-            }
-        }
-    ],
     objects: [
         // {
         //     color: 'black',
-        //     x: 300,
-        //     y: 400,
+        //     x: 700,
+        //     y: 700,
         //     width: 500,
         //     height: 40,
         //     deleteAfterUse: false,
@@ -379,13 +366,15 @@ io.on('connection', function(socket){
 
 function tryToGoTo(player, x, y) {
     // Can't go off the map
-    if(x < 25 || y < 25 || x > (map.width - 25) || y > (map.height - 25))
+    if(x < 0 || y < 0 || x > (map.width - 50) || y > (map.height - 50))
         return false;
 
     // Try to find a collision object
     const object = map.objects.find(obj => {
-        return x > obj.x && x < (obj.x + obj.width)
-        && y > obj.y && y < (obj.y + obj.height);
+        return player.x < obj.x + obj.width &&
+            player.x + player.width > obj.x &&
+            player.y < obj.y + obj.height &&
+            player.y + player.height > obj.y;
     });
     if(object !== undefined) {
         return object.canWalkThrough !== undefined ? object.canWalkThrough : true;
