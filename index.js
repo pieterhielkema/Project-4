@@ -8,6 +8,9 @@ app.use(require('express').static('public'));
 app.get('/', function(req, res){
 	res.sendFile(__dirname + '/index.html');
 });
+app.get('/3d', function(req, res){
+	res.sendFile(__dirname + '/3d.html');
+});
 
 /* PARAMS */
 const refreshRate = 10; // ms
@@ -234,13 +237,19 @@ io.on('connection', function(socket){
 			if(player.moveKeys === null || player.moveKeys === undefined)
 				return;
 
+			if(player.moveKeys.up !== true)
+				return;
+
+			const x = Math.cos((player.lookingDirection - 90) * Math.PI / 180) * 4;
+			const y = Math.sin((player.lookingDirection - 90) * Math.PI / 180) * 4;
+
 			if(tryToGoTo(
 				player,
-				player.x + (player.moveKeys.left ? -2 : 0) + (player.moveKeys.right ? 2 : 0),
-				player.y + (player.moveKeys.up ? -2 : 0) + (player.moveKeys.down ? 2 : 0)
+				player.x + x,
+				player.y + y
 			)) {
-				player.x += (player.moveKeys.left ? -2 : 0) + (player.moveKeys.right ? 2 : 0);
-				player.y += (player.moveKeys.up ? -2 : 0) + (player.moveKeys.down ? 2 : 0);
+				player.x += x;
+				player.y += y;
 			}
 		}
 	};
