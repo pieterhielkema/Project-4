@@ -1,9 +1,23 @@
-var app = require('express')();
-var http = require('http').createServer(app);
-var io = require('socket.io')(http);
-var port = process.env.PORT || 3000;
+import express from 'express';
+import * as httpJs from 'http';
+import Server from 'socket.io';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-app.use(require('express').static('public'));
+var port = process.env.PORT || 3000;
+const app = express();
+var http = httpJs.createServer(app);
+var io = new Server(http);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+/* Import colors and objects */
+import colors from './colors.js';
+import getObjectTemplates from './objects.js';
+
+/* Allow public folder to be accessed */
+app.use(express.static('public'));
 
 app.get('/', function(req, res){
 	res.sendFile(__dirname + '/index.html');
@@ -14,24 +28,12 @@ app.get('/3d', function(req, res){
 
 /* PARAMS */
 const refreshRate = 10; // ms
-const colors = ["#1abc9c", "#16a085", "#27ae60", "#2ecc71", "#3498db", "#9b59b6", "#34495e", "#2980b9", "#8e44ad", "#2c3e50", "#f1c40f", "#e67e22", "#e74c3c",
-	"#95a5a6", "#f39c12", "#d35400", "#c0392b", "#bdc3c7", "#7f8c8d"];
 
 /* INIT VARS */
 const map = {
 	height: 2000,
 	width: 2000,
-	objects: [
-		// {
-		//     color: 'black',
-		//     x: 700,
-		//     y: 700,
-		//     width: 500,
-		//     height: 40,
-		//     deleteAfterUse: false,
-		//     canWalkThrough: false,
-		// }
-	],
+	objects: [],
 	players: {},
 };
 const names = {};
@@ -40,131 +42,12 @@ const names = {};
  * New items loop
  */
 setInterval(() => {
-	const newItems = [
-		{
-			color: 'red',
-			x: 10,
-			y: 10,
-			width: 20,
-			height: 20,
-			params: {
-				i: 0,
-			},
-			callback: (item) => {
-				item.params.i++;
-				if(item.params.i > 5000) {
-					map.objects = map.objects.filter(x => x !== item);
-				}
-			},
-			onUserInteraction: (player) => {
-				player.health -= 1;
-			}
-		},
-		{
-			color: 'green',
-			x: 200,
-			y: 10,
-			width: 20,
-			height: 20,
-			params: {
-				i: 0,
-			},
-			callback: (item) => {
-				item.params.i++;
-				if(item.params.i > 5000) {
-					map.objects = map.objects.filter(x => x !== item);
-				}
-			},
-			deleteAfterUse: true,
-			onUserInteraction: (player) => {
-				player.health = Math.min(100, player.health + 20);
-			}
-		},
-		{
-			color: 'gold', // yellow
-			x: 1050,
-			y: 650,
-			width: 20,
-			height: 20,
-			params: {
-				i: 0,
-			},
-			callback: (item) => {
-				item.params.i++;
-				if(item.params.i > 500) {
-					map.objects = map.objects.filter(x => x !== item);
-				}
-			},
-			deleteAfterUse: false,
-			onUserInteraction: (player) => {
-				player.health = Math.min(100, player.health + 5);
-			}
-		},
-		{
-			color: 'blue',
-			x: 1100,
-			y: 400,
-			width: 20,
-			height: 20,
-			params: {
-				i: 0,
-			},
-			callback: (item) => {
-				item.params.i++;
-				if(item.params.i > 5000) {
-					map.objects = map.objects.filter(x => x !== item);
-				}
-			},
-			deleteAfterUse: true,
-			onUserInteraction: (player) => {
-				player.distance = Math.min(7, player.distance + 1);
-			}
-		},
-		{
-			color: 'indigo',
-			x: 1100,
-			y: 400,
-			width: 20,
-			height: 20,
-			params: {
-				i: 0,
-			},
-			callback: (item) => {
-				item.params.i++;
-				if(item.params.i > 5000) {
-					map.objects = map.objects.filter(x => x !== item);
-				}
-			},
-			deleteAfterUse: true,
-			onUserInteraction: (player) => {
-				player.balls.regular += 10;
-			}
-		},
-		{
-			color: 'indigo',
-			x: 1100,
-			y: 400,
-			width: 20,
-			height: 20,
-			params: {
-				i: 0,
-			},
-			callback: (item) => {
-				item.params.i++;
-				if(item.params.i > 5000) {
-					map.objects = map.objects.filter(x => x !== item);
-				}
-			},
-			deleteAfterUse: true,
-			onUserInteraction: (player) => {
-				player.balls.regular += 10;
-			}
-		},
-	];
-	const randomInt = Math.floor(Math.random() * Math.floor(newItems.length));
-	newItems[randomInt].x = 50 + Math.floor(Math.random() * Math.floor(map.width - 100));
-	newItems[randomInt].y = 50 + Math.floor(Math.random() * Math.floor(map.height - 100));
-	map.objects.push(newItems[randomInt]);
+    var objects = getObjectTemplates();
+    const randomInt = Math.floor(Math.random() * Math.floor(objects.length));
+    var newObject = objects[randomInt];
+    newObject.x = 50 + Math.floor(Math.random() * Math.floor(map.width - 100));
+    newObject.y = 50 + Math.floor(Math.random() * Math.floor(map.height - 100));
+	map.objects.push(newObject);
 }, 1000);
 
 /*
@@ -186,6 +69,8 @@ setInterval(() => {
 				player.y < obj.y + obj.height &&
 				player.y + player.height > obj.y;
 		});
+
+        // If collision, call the callback / Delete if needed
 		if(object !== undefined && object.sender !== player) {
 			if(object.onUserInteraction !== undefined)
 				object.onUserInteraction(player);
@@ -194,10 +79,12 @@ setInterval(() => {
 				map.objects = map.objects.filter(x => x !== object);
 		}
 	});
+
 	map.objects.forEach(object => {
 		if(object.callback !== undefined)
-			object.callback(object)
+			object.callback(object, map)
 	});
+
 	io.emit('updateMap', map);
 }, refreshRate);
 
@@ -369,7 +256,7 @@ function tryToGoTo(player, x, y) {
 		return object.canWalkThrough !== undefined ? object.canWalkThrough : true;
 	}
 
-	// Return true if nothing happends
+	// Return true if nothing happens
 	return true;
 }
 
