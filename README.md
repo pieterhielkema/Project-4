@@ -4,3 +4,5 @@ Spelletje waarbij je jouw tegenstanders moet verslaan door ze te raken met een b
 Schieten: klikken
 
 Lopen: WASD
+
+Demo <a href="https://pieter-project-4.herokuapp.com">https://pieter-project-4.herokuapp.com</a>
