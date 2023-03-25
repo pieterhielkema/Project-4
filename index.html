@@ -25,7 +25,7 @@
 <body>
 	<div id="app">
 		<!-- My health -->
-		<div v-if="me !== null" style="position: absolute; z-index: 40; top: 0; left: 5px; display: flex; background: white; border-radius: 0 0 5px 5px; padding: 10px;">
+		<div v-if="me !== null && me.health > 0" style="position: absolute; z-index: 40; top: 0; left: 5px; display: flex; background: white; border-radius: 0 0 5px 5px; padding: 10px;">
 			<div style="width: 250px; height: 20px; border-radius: 3px; overflow: hidden; background: red;">
 				<div style="float: left; height: 20px; background: green;" :style="{ width: me.health + '%' }"></div>
 			</div>

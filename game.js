@@ -12,7 +12,6 @@ export default {
         objects: [],
         players: {},
     },
-    names: {},
     colors: colors,
 
     /*
@@ -85,7 +84,7 @@ export default {
      */
     addPlayerForSocketId(socketId) {
         const player = this.map.players[socketId] = {
-            name: this.names[socketId] ?? "Player",
+            name: null,
             x: 100 + Math.floor(Math.random() * Math.floor(this.map.width - 200)),
             y: 100 + Math.floor(Math.random() * Math.floor(this.map.height - 200)),
             width: 50,
@@ -122,15 +121,27 @@ export default {
         return player;
     },
     setNameForSocketId(socketId, name) {
-        this.names[socketId] = name;
+        if(this.map.players[socketId] === undefined)
+            return;
+
+        this.map.players[socketId].name = name;;
     },
     movePlayer(socketId, moveKeys) {
+        if(this.map.players[socketId] === undefined)
+            return;
+
         this.map.players[socketId].moveKeys = moveKeys;
     },
     setPlayerLookingDirection(socketId, lookingDirection) {
+        if(this.map.players[socketId] === undefined)
+            return;
+
         this.map.players[socketId].lookingDirection = lookingDirection;
     },
     shoot(socketId) {
+        if(this.map.players[socketId] === undefined)
+            return;
+
         if(this.map.players[socketId].balls.regular < 1)
             return;
 
@@ -166,7 +177,6 @@ export default {
     },
     removePlayer(socketId) {
         delete this.map.players[socketId];
-        delete this.names[socketId];
     },
     canPlayerGoTo(player, x, y) {
         // Can't go off the map
