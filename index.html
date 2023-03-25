@@ -66,8 +66,9 @@
 
 				<div class="ball"
 					 v-for="ball in map.objects"
-					 style="position: absolute; border-radius: 50%; z-index: 25;"
-					 :style="{ background: ball.color, left: ball.x + 'px', top: ball.y + 'px', width: ball.width + 'px', height: ball.height + 'px' }">
+					 style="position: absolute; border-radius: 50%; z-index: 25; font-size: 40px;"
+					 :style="{ background: ball.emoji ? '' : ball.color, left: ball.x + 'px', top: ball.y + 'px', width: ball.width + 'px', height: ball.height + 'px' }">
+					{{ ball.emoji ?? "" }}
 				</div>
 			</div>
 		</template>

@@ -1,6 +1,7 @@
 export default () => [
     {
         color: 'red',
+        emoji: '🔥',
         x: 10,
         y: 10,
         width: 20,
@@ -20,6 +21,7 @@ export default () => [
     },
     {
         color: 'green',
+        emoji: '💚',
         x: 200,
         y: 10,
         width: 20,
@@ -40,6 +42,7 @@ export default () => [
     },
     {
         color: 'gold', // yellow
+        emoji: '💛',
         x: 1050,
         y: 650,
         width: 20,
@@ -60,6 +63,7 @@ export default () => [
     },
     {
         color: 'blue',
+        emoji: '👋',
         x: 1100,
         y: 400,
         width: 20,
@@ -80,6 +84,7 @@ export default () => [
     },
     {
         color: 'indigo',
+        emoji: '🎾',
         x: 1100,
         y: 400,
         width: 20,
@@ -100,6 +105,7 @@ export default () => [
     },
     {
         color: 'indigo',
+        emoji: '🥎',
         x: 1100,
         y: 400,
         width: 20,
