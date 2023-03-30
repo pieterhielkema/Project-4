@@ -1,3 +1,5 @@
+<img src="docs/img/game.png" alt="ShootShoot">
+
 # ShootShoot
 Goal of the game is to hit your friends with balls.
 
