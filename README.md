@@ -1,8 +1,8 @@
-# Project-4
-Spelletje waarbij je jouw tegenstanders moet verslaan door ze te raken met een bal.
+# ShootShoot
+Goal of the game is to hit your friends with balls.
 
-Schieten: klikken
-
-Lopen: WASD
+### Controls
+Shoot: Click
+Walk: W (direction of mouse)
 
 Demo <a href="https://pieter-project-4.herokuapp.com">https://pieter-project-4.herokuapp.com</a>
